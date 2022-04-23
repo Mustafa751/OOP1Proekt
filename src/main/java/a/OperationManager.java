@@ -7,5 +7,4 @@ public class OperationManager {
         this.fileWorker = fileWorker;
     }
 
-    public
 }
