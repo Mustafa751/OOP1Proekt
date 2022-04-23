@@ -1,5 +1,7 @@
 package a;
 
+import net.minidev.json.parser.ParseException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -9,7 +11,7 @@ public class Main {
         fw.Validate();
         fw.Print();
         fw.Search("id");
-        fw.Delete("names");
+        fw.Delete("id");
         fw.Print();
     }
 }

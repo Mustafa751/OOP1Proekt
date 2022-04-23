@@ -1,5 +1,10 @@
 package a;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,7 +15,7 @@ import java.nio.file.Paths;
 public class FileWorker {
     private String path;
     private String content = null;
-    private JSONObject jo = null;
+    private JSONArray ja = null;
 
     public String getPath() {
         return path;
@@ -34,7 +39,8 @@ public class FileWorker {
 
     public void Validate() {
         try{
-            JSONObject jo = new JSONObject(content);
+            JSONArray array = new JSONArray(content);
+            ja = array;
             System.out.println("The json is valid");
         }
         catch(Exception ex) {
@@ -43,45 +49,57 @@ public class FileWorker {
     }
 
     public void Print(){
-        jo = new JSONObject(content);
+        JSONArray array = new JSONArray(content);
+        ja = array;
         System.out.println(content.toString());
     }
 
     public void Search(String key){
-        boolean flag = false;
-        for (String key1: jo.keySet()){
+       boolean flag = false;
+        for(int i=0;i<ja.length();i++)
+        {
+            JSONObject jo = ja.getJSONObject(i);
+            for (String key1: jo.keySet()){
             if(key.equals(key1))
             {
                 flag = true;
                 System.out.println(jo.get(key));
             }
+         }
         }
-        if(!flag)
-            System.out.println("No such key");
+
+       if(!flag)
+           System.out.println("No such key");
     }
 
     public void Delete(String key){
+        JSONArray ja1 = new JSONArray();
         boolean flag = false;
-        for (String key1: jo.keySet()){
-            if(key.equals(key1))
-            {
-                flag = true;
-                jo.remove(key);
-                content = jo.toString();
-                break;
+        for(int i=0;i<ja.length();i++)
+        {
+            JSONObject jo = ja.getJSONObject(i);
+            for (String key1: jo.keySet()){
+                if(key.equals(key1))
+                {
+                    flag = true;
+                    jo.remove(key);
+                    ja1.put(jo);
+                    break;
+                }
             }
         }
-        if(!flag)
+            if(!flag)
             System.out.println("No such key");
+            else
+            {
+                ja = ja1;
+                content = ja.toString();
+            }
     }
 
     private static String readFile(String path) throws IOException
     {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, StandardCharsets.UTF_8);
-    }
-    private JSONObject remove(String key) {
-        jo.remove(key);
-        return this.jo;
     }
 }
