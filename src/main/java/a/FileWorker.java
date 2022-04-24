@@ -1,5 +1,6 @@
 package a;
 
+import com.cedarsoftware.util.io.JsonWriter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import org.json.JSONObject;
@@ -51,7 +52,8 @@ public class FileWorker {
     public void Print(){
         JSONArray array = new JSONArray(content);
         ja = array;
-        System.out.println(content.toString());
+        String niceFormattedJson = JsonWriter.formatJson(content);
+        System.out.println(niceFormattedJson);
     }
 
     public void Search(String key){

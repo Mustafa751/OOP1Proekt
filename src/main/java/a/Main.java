@@ -1,6 +1,5 @@
 package a;
 
-import net.minidev.json.parser.ParseException;
 
 public class Main {
 
