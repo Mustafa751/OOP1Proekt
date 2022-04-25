@@ -73,17 +73,57 @@ public class FileWorker {
         String separator = "\\";
         String[] keys = path.split(Pattern.quote(separator));
         JSONArray ja1 = new JSONArray();
+        JSONObject jo1 = new JSONObject();
         boolean flag = false;
         for (int i = 0; i < ja.length(); i++) {
-            JSONObject jo = ja.getJSONObject(i);
-            JSONObject current = new JSONObject();
+            jo1 = ja.getJSONObject(i);
+            boolean flag1 = true;
+            for(int j=0;j<keys.length;j++) {
+                if(j!= keys.length - 1)
+                {
+                try{
+                    jo1 = jo1.getJSONObject(keys[j]);
+                }
+                catch (Exception ex){
+                    flag1 = false;
+                    break;
+                }}
+                else
+                {
+                    if(!jo1.has(keys[j])) {
+                        flag1 = false;
+                    }
+                }
+            }
+            if(flag1)
+            {
+                flag = true;
+                break;
+            }
+
+         /*   for(int j=0;j<keys.length;j++)
+            {
+                if(jo1.has(keys[j]) && j < keys.length-1)
+                {
+                    jo1 = jo1.getJSONObject(keys[j]);
+                }
+                else if(jo1.has(keys[j]))
+                {
+                    jo1.remove(keys[j]);
+                    flag = true;
+                }
+            }
+            if(flag)
+                break;
+ */
         }
-        if (!flag)
-            System.out.println("No such key");
-        else {
+        if(flag) {
+            System.out.println("true");
             ja = ja1;
             content = ja.toString();
         }
+        else
+            System.out.println("false");
     }
 
     private static String readFile(String path) throws IOException {
