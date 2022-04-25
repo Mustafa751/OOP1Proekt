@@ -10,7 +10,7 @@ public class Main {
         fw.Validate();
         fw.Print();
         fw.Search("menuitem");
-        //fw.Delete("id");
-        //fw.Print();
+        fw.Delete();
+        fw.Print();
     }
 }

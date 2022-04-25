@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class FileWorker {
     private String path;
@@ -64,19 +66,17 @@ public class FileWorker {
             System.out.println("No such key");
     }
 
-    public void Delete(String key) {
+    public void Delete() {
+        System.out.println("Type the path to the key");
+        Scanner scanner = new Scanner(System.in);
+        String path = scanner.nextLine();
+        String separator = "\\";
+        String[] keys = path.split(Pattern.quote(separator));
         JSONArray ja1 = new JSONArray();
         boolean flag = false;
         for (int i = 0; i < ja.length(); i++) {
             JSONObject jo = ja.getJSONObject(i);
-            for (String key1 : jo.keySet()) {
-                if (key.equals(key1)) {
-                    flag = true;
-                    jo.remove(key);
-                    ja1.put(jo);
-                    break;
-                }
-            }
+            JSONObject current = new JSONObject();
         }
         if (!flag)
             System.out.println("No such key");
