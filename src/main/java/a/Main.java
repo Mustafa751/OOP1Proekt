@@ -9,8 +9,8 @@ public class Main {
         fw.Open();
         fw.Validate();
         fw.Print();
-        fw.Search("id");
-        fw.Delete("id");
-        fw.Print();
+        fw.Search("menuitem");
+        //fw.Delete("id");
+        //fw.Print();
     }
 }
