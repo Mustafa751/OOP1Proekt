@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +20,10 @@ import java.util.regex.Pattern;
 
 public class FileWorker {
     private String path;
+
+    private boolean isOpen = false;
+
+    private boolean toExit = true;
     private String content = null;
     private JSONArray ja = null;
 
@@ -30,19 +35,184 @@ public class FileWorker {
         this.path = path;
     }
 
-    public FileWorker(String path) {
-        this.path = path;
+    public FileWorker() {
     }
 
-    public void Open() {
+    public void menu() throws Exception {
+        while(toExit)
+        {
+            Scanner scanner = new Scanner(System.in);
+            String command = scanner.nextLine();
+            switch (command){
+                case "open":
+                    {
+                        if(isOpen)
+                        {
+                            System.out.println("file is already opened");
+                            break;
+                        }
+                        open();
+                    }
+                    break;
+                case "close":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        close();
+                    }
+                    break;
+                case "save":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        save();
+                    }
+                    break;
+                case "saveas":
+                    {
+                        String[] path = command.split(" ");
+                        saveas(path[1]);
+                    }
+                    break;
+                case "help":
+                    {
+                        help();
+                    }
+                    break;
+                case "exit":
+                    {
+                        exit();
+                    }
+                    break;
+                case "validate":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        validate();
+                    }
+                    break;
+                case "print":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        print();
+                    }
+                    break;
+                case "search":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        System.out.println("enter the key you are searching");
+                        String key = scanner.nextLine();
+                        search(key);
+                    }
+                    break;
+                case "set":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        set();
+                    }
+                    break;
+                case "create":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        create();
+                    }
+                    break;
+                case "delete":
+                    {
+                        if(!isOpen)
+                        {
+                            System.out.println("There is no open file");
+                            break;
+                        }
+                        delete();
+                    }
+                    break;
+                default:
+                    {
+                        System.out.println("wrong command");
+                        help();
+                    }
+            }
+        }
+    }
+
+    private void exit() {
+        this.toExit = false;
+        System.out.println("Exiting the program...");
+    }
+
+    private void help() {
+        System.out.println("The following commands are supported:");
+        System.out.println("open <file> opens <file>");
+        System.out.println("close closes currently opened file");
+        System.out.println("save saves the currently open file");
+        System.out.println("saveas <file> saves the currently open file in <file>");
+        System.out.println("help prints this information");
+        System.out.println("exit exists the program");
+        System.out.println("validate validates the json");
+        System.out.println("print prints the json");
+        System.out.println("search <key>  prints the values under the specified key");
+        System.out.println("set <path> <string> sets the value under the given path to the given string if the string is correct json");
+        System.out.println("create <path> <string> creates the value under the given path to the given string if the string is correct json");
+        System.out.println("delete <path>  deletes the values under the given path if the path is correct");
+    }
+
+    private void saveas(String path) throws IOException {
+        String text = ja.toString();
+        FileWriter myWriter = new FileWriter(path);
+        myWriter.write(text);
+        myWriter.close();
+    }
+
+    private void save() throws IOException {
+        String text = ja.toString();
+        FileWriter myWriter = new FileWriter(path);
+        myWriter.write(text);
+        myWriter.close();
+    }
+
+    private void close() {
+        this.path = null;
+        this.ja = null;
+        this.content = null;
+        this.isOpen = false;
+    }
+
+    private void open() {
         try {
             content = readFile(path);
+            isOpen = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void Validate() {
+    public void validate() {
         try {
             JSONArray array = new JSONArray(content);
             ja = array;
@@ -52,14 +222,14 @@ public class FileWorker {
         }
     }
 
-    public void Print() {
+    public void print() {
         JSONArray array = new JSONArray(content);
         ja = array;
         String niceFormattedJson = JsonWriter.formatJson(content);
         System.out.println(niceFormattedJson);
     }
 
-    public void Search(String key) {
+    public void search(String key) {
         boolean flag = false;
         for (int i = 0; i < ja.length(); i++) {
             JSONObject jo = ja.getJSONObject(i);
@@ -71,7 +241,7 @@ public class FileWorker {
             System.out.println("No such key");
     }
 
-    public void Delete() throws Exception {
+    public void delete() throws Exception {
         System.out.println("Type the path to the key");
         Scanner scanner = new Scanner(System.in);
         String path = scanner.nextLine();
@@ -102,7 +272,7 @@ public class FileWorker {
         content = ja.toString();
     }
 
-    public void Set() throws Exception {
+    public void set() throws Exception {
         System.out.println("Type the path to the key");
         Scanner scanner = new Scanner(System.in);
         String path = scanner.nextLine();
@@ -147,7 +317,7 @@ public class FileWorker {
         }
     }
 
-    public void Create() {
+    public void create() {
         System.out.println("Type the path to the key");
         Scanner scanner = new Scanner(System.in);
         String path = scanner.nextLine();
@@ -171,8 +341,8 @@ public class FileWorker {
         for(int i=0;i<ja.length();i++)
         {
             boolean checkIfKeyExists1 = checkKey(ja.getJSONObject(i),keys[0]);
-                    if(checkIfKeyExists1)
-                        checkIfKeyExists = true;
+            if(checkIfKeyExists1)
+                checkIfKeyExists = true;
         }
         if(checkIfKeyExists && k == 0) {
             for (int i = 0; i < ja.length(); i++) {
