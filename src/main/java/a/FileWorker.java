@@ -51,6 +51,8 @@ public class FileWorker {
                             System.out.println("file is already opened");
                             break;
                         }
+                        String[] path1 = command.split(" ");
+                        path = path1[1];
                         open();
                     }
                     break;
@@ -88,6 +90,7 @@ public class FileWorker {
                 case "exit":
                     {
                         exit();
+                        toExit = false;
                     }
                     break;
                 case "validate":
@@ -117,9 +120,8 @@ public class FileWorker {
                             System.out.println("There is no open file");
                             break;
                         }
-                        System.out.println("enter the key you are searching");
-                        String key = scanner.nextLine();
-                        search(key);
+                        String[] keys = command.split(" ");
+                        search(keys[1]);
                     }
                     break;
                 case "set":
@@ -129,7 +131,8 @@ public class FileWorker {
                             System.out.println("There is no open file");
                             break;
                         }
-                        set();
+                        String[] pathandjson = command.split(" ");
+                        set(pathandjson[1],pathandjson[2]);
                     }
                     break;
                 case "create":
@@ -139,7 +142,8 @@ public class FileWorker {
                             System.out.println("There is no open file");
                             break;
                         }
-                        create();
+                        String[] pathandjson = command.split(" ");
+                        create(pathandjson[1],pathandjson[2]);
                     }
                     break;
                 case "delete":
@@ -149,7 +153,8 @@ public class FileWorker {
                             System.out.println("There is no open file");
                             break;
                         }
-                        delete();
+                        String[] path= command.split(" ");
+                        delete(path[1]);
                     }
                     break;
                 default:
@@ -241,10 +246,7 @@ public class FileWorker {
             System.out.println("No such key");
     }
 
-    public void delete() throws Exception {
-        System.out.println("Type the path to the key");
-        Scanner scanner = new Scanner(System.in);
-        String path = scanner.nextLine();
+    public void delete(String path) throws Exception {
         String separator = "\\";
         String[] keys = path.split(Pattern.quote(separator));
         JSONArray ja1 = new JSONArray();
@@ -272,13 +274,8 @@ public class FileWorker {
         content = ja.toString();
     }
 
-    public void set() throws Exception {
-        System.out.println("Type the path to the key");
-        Scanner scanner = new Scanner(System.in);
-        String path = scanner.nextLine();
-        System.out.println("Enter the string for object you want to replace");
+    public void set(String path,String jsonValue) throws Exception {
         int k = 0;
-        String jsonValue = scanner.nextLine();
         JSONObject jb = null;
         try {
             jb = new JSONObject(jsonValue);
@@ -317,13 +314,8 @@ public class FileWorker {
         }
     }
 
-    public void create() {
-        System.out.println("Type the path to the key");
-        Scanner scanner = new Scanner(System.in);
-        String path = scanner.nextLine();
+    public void create(String path, String jsonValue) {
         int k = 0;
-        System.out.println("Enter the string for object you want to create");
-        String jsonValue = scanner.nextLine();
         JSONObject jb = null;
         try {
             jb = new JSONObject(jsonValue);
